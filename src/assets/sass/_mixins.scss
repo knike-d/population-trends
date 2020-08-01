@@ -1,0 +1,24 @@
+@mixin click-effect(){
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@mixin hover_active($color) {
+    @media (hover: hover) {
+        &:hover {
+            background-color: $color;
+        }
+    }
+    &:active{
+        background-color: $color;
+    }
+}
+
+@mixin fade-in-bottom($delay: 0s) {
+    @keyframes fade-in-bottom {
+        0% {transform: translateY(5vw); opacity: 0;}
+        100% {transform: translateY(0); opacity: 1;}
+    }
+    animation: fade-in-bottom 1.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+    animation-delay: $delay;
+}

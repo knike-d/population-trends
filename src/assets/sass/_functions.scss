@@ -1,0 +1,11 @@
+@function clampVal($val, $max: $max-w-multiplier, $min: 0) {
+    $min: $val/1vw*1px*$min;
+    $max: $val/1vw*1px*$max;
+    @if $max == 0{
+        $max: 1px;
+    }
+    @if $min == 0{
+        $min: 1px;
+    }
+	@return clamp($min, $val, $max);
+}
