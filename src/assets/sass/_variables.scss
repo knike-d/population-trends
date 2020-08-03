@@ -1,8 +1,9 @@
 $max-w-multiplier: 7.5;
-$main-color: #1AE36A;
+$main-color: #1ae36a;
+$hover-color: #efefef;
 $lg-fs: 8vw;
-$md-fs: 3.4vw;
-$sm-fs: 3vw;
+$md-fs: 3.6vw;
+$sm-fs: 3.4vw;
 
 /* top */
 $top-wrap-h: 66vw;
@@ -12,3 +13,15 @@ $top-title-fs: $lg-fs;
 $top-title-top-p: 8vw;
 $top-sub-title-fs: $md-fs;
 $top-sub-title-top-p: 5vw;
+
+/* PrefSlctGroup.vue */
+$pref-slct-wrap-w: 86vw;
+$pref-slct-wrap-top-m: 4vw;
+$pref-slct-fs: $sm-fs;
+
+/* PrefBtnGroup.vue */
+$pref-wrap-top-m: 2vw;
+$max-btn-multiplier: 5;
+$pref-btn-fs: $sm-fs;
+$pref-btn-h: 12vw;
+$pref-btn-bottom-m: 3vw;
