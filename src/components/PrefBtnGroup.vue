@@ -1,20 +1,25 @@
 <template>
   <div class="pref-btn-wrap">
-    <label class="pref-btn" v-for="item in regionList" :key="item">
-      <input type="checkbox" class="pref-btn-input" />{{ item }}
+    <label class="pref-btn" v-for="item in nameList" :key="item">
+      <input type="checkbox" class="pref-btn-input" @click="clickBtn(item)" />
+      {{ item }}
     </label>
   </div>
 </template>
 
 <script>
 export default {
-  components: {},
-  data() {
-    return {
-      regionList: ["北海道・東北地方", "2", "3", "4", "5", "6", "7"],
-    };
+  props: {
+    nameList: {
+      type: Array,
+      required: true,
+    },
   },
-  methods: {},
+  methods: {
+    clickBtn(item) {
+      this.$emit("emit-btn-name", item);
+    },
+  },
 };
 </script>
 
