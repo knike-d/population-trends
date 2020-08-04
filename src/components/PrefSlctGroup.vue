@@ -1,8 +1,13 @@
 <template>
   <div id="pref-slct-wrap">
-    <div id="pref-slct-txt">
-      都道府県を選択してください<br />
-      現在の選択数：{{ slctPrefList.length }}
+    <div id="pref-slct-nav">
+      <button id="pref-slct-back" v-show="prefSlctState" @click="goRegionList">
+        戻る
+      </button>
+      <div id="pref-slct-txt">
+        都道府県を選択してください<br />
+        現在の選択数：{{ slctPrefList.length }}
+      </div>
     </div>
     <PrefBtnGroup
       v-if="!prefSlctState"
@@ -78,10 +83,29 @@ export default {
 #pref-slct-wrap {
   width: clamping($pref-slct-wrap-w);
   margin: clamping($pref-slct-wrap-top-m) auto 0 auto;
-  #pref-slct-txt {
-    font-weight: bold;
-    font-size: clamping($pref-slct-fs, $max-btn-multiplier);
-    text-align: center;
+  #pref-slct-nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: clamping($pref-slct-nav-h, $max-btn-multiplier);
+    #pref-slct-back {
+      position: absolute;
+      left: 0;
+      padding: 4px 8px;
+      font-weight: bold;
+      font-size: clamping($pref-slct-fs, $max-btn-multiplier);
+      background: white;
+      border: solid rgb(177, 177, 177) 1px;
+      @include click-effect();
+      @include hover_active($hover-color);
+    }
+    #pref-slct-txt {
+      position: absolute;
+      font-weight: bold;
+      font-size: clamping($pref-slct-fs, $max-btn-multiplier);
+      text-align: center;
+    }
   }
 }
 </style>
