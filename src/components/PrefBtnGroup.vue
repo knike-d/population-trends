@@ -1,8 +1,8 @@
 <template>
   <div class="pref-btn-wrap">
-    <label class="pref-btn" v-for="item in nameList" :key="item">
-      <input type="checkbox" class="pref-btn-input" @click="clickBtn(item)" />
-      {{ item }}
+    <label class="pref-btn" v-for="(name, index) in nameList" :key="name">
+      <input type="checkbox" class="pref-btn-input" @click="clickBtn(name, index)" />
+      {{ name }}
     </label>
   </div>
 </template>
@@ -14,10 +14,16 @@ export default {
       type: Array,
       required: true,
     },
+    prefCodeList: {
+      type: Array,
+      default: () => null,
+    },
   },
   methods: {
-    clickBtn(item) {
-      this.$emit("emit-btn-name", item);
+    clickBtn(name, index) {
+      this.prefCodeList === null
+        ? this.$emit("emit-btn-name", name)
+        : this.$emit("emit-btn-name", name, this.prefCodeList[index]);
     },
   },
 };

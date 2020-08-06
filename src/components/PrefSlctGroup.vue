@@ -6,17 +6,14 @@
       </button>
       <div id="pref-slct-txt">
         都道府県を選択してください<br />
-        現在の選択数：{{ slctPrefList.length }}
+        現在の選択数：{{ slctPrefList.prefCodeList.length }}
       </div>
     </div>
-    <PrefBtnGroup
-      v-if="!prefSlctState"
-      :name-list="regionList"
-      @emit-btn-name="goPrefList"
-    />
+    <PrefBtnGroup v-if="!prefSlctState" :name-list="regionList" @emit-btn-name="goPrefList" />
     <PrefBtnGroup
       v-else-if="prefSlctState"
-      :name-list="prefList"
+      :name-list="prefNameList"
+      :pref-code-list="prefCodeList"
       @emit-btn-name="emitPref"
     />
   </div>
@@ -33,7 +30,10 @@ export default {
   },
   data() {
     return {
-      slctPrefList: [],
+      slctPrefList: {
+        prefNameList: [],
+        prefCodeList: [],
+      },
       prefSlctState: false,
       regionList: regionList,
       slctRegion: "",
@@ -41,9 +41,13 @@ export default {
     };
   },
   computed: {
-    prefList() {
+    prefNameList() {
       const foundList = this.allPrefList.find((obj) => obj.region === this.slctRegion);
-      return foundList.prefList;
+      return foundList.prefList.map((obj) => obj.prefName);
+    },
+    prefCodeList() {
+      const foundList = this.allPrefList.find((obj) => obj.region === this.slctRegion);
+      return foundList.prefList.map((obj) => obj.prefCode);
     },
   },
   created() {
@@ -54,9 +58,7 @@ export default {
       })
       .then((response) => {
         for (const i in prefNumArray)
-          prefArray[i].prefList = response.data.result
-            .splice(0, prefNumArray[i])
-            .map((obj) => obj.prefName);
+          prefArray[i].prefList = response.data.result.splice(0, prefNumArray[i]);
         this.allPrefList = prefArray;
       });
   },
@@ -68,11 +70,15 @@ export default {
       this.slctRegion = regionName;
       this.prefSlctState = true;
     },
-    emitPref(prefName) {
-      const index = this.slctPrefList.indexOf(prefName);
-      index === -1
-        ? this.slctPrefList.push(prefName)
-        : this.slctPrefList.splice(index, 1);
+    emitPref(prefName, prefCode) {
+      const index = this.slctPrefList.prefCodeList.indexOf(prefCode);
+      if (index === -1) {
+        this.slctPrefList.prefNameList.push(prefName);
+        this.slctPrefList.prefCodeList.push(prefCode);
+      } else {
+        this.slctPrefList.prefNameList.splice(index, 1);
+        this.slctPrefList.prefCodeList.splice(index, 1);
+      }
       this.$emit("emit-pref-list", this.slctPrefList);
     },
   },
