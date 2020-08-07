@@ -5,7 +5,8 @@ $lg-fs: 8vw;
 $md-fs: 3.6vw;
 $sm-fs: 3.4vw;
 
-/* top */
+/* App.vue */
+// top
 $top-wrap-h: 66vw;
 $top-bg-color: $main-color;
 $top-title-left-p: 8vw;
@@ -13,6 +14,9 @@ $top-title-fs: $lg-fs;
 $top-title-top-p: 8vw;
 $top-sub-title-fs: $md-fs;
 $top-sub-title-top-p: 5vw;
+// chart
+$chart-w: 96vw;
+$pref-chart-m: 5vw;
 
 /* PrefSlctGroup.vue */
 $pref-slct-wrap-w: 86vw;
