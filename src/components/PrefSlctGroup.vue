@@ -68,7 +68,7 @@ export default {
     const prefUrl = "https://opendata.resas-portal.go.jp/api/v1/prefectures";
     axios
       .get(prefUrl, {
-        headers: { "X-API-KEY": "" },
+        headers: { "X-API-KEY": process.env.VUE_APP_API_KEY },
       })
       .then((response) => {
         for (const i in prefNumArray)

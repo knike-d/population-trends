@@ -6,6 +6,9 @@
     </div>
     <PrefSlctGroup @emit-pref-list="receivePref" />
     <PrefChart :data="chartData" :options="options" :css-classes="chartStyle" />
+    <div id="footer">
+      出典：RESAS（地域経済分析システム）
+    </div>
   </div>
 </template>
 
@@ -59,7 +62,7 @@ export default {
         const prefData = {};
         await axios
           .get(prefUrl, {
-            headers: { "X-API-KEY": "" },
+            headers: { "X-API-KEY": process.env.VUE_APP_API_KEY },
             params: {
               prefCode: list.prefCodeList[i],
               cityCode: "-",
@@ -123,6 +126,12 @@ export default {
     width: clamping($chart-w);
     margin: clamping($pref-chart-m) auto;
     @include fade-in-bottom(1.8s);
+  }
+  #footer {
+    margin-top: 20px;
+    padding: 30px 0;
+    text-align: center;
+    border-top: 7px solid darkgray;
   }
 }
 </style>
