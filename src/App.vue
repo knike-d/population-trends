@@ -33,7 +33,7 @@ export default {
             {
               scaleLabel: {
                 display: true,
-                labelString: "年",
+                labelString: "年度",
               },
             },
           ],
@@ -41,7 +41,7 @@ export default {
             {
               scaleLabel: {
                 display: true,
-                labelString: "人",
+                labelString: "総人口（人）",
               },
             },
           ],
@@ -94,7 +94,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   #top-wrap {
     height: clamping($top-wrap-h);
-    background-color: $top-bg-color;
+    background: $top-bg-color;
     #top-title {
       max-width: $max-w-multiplier * 100px;
       margin: auto;
@@ -102,7 +102,7 @@ export default {
       padding-left: clamping($top-title-left-p);
       color: black;
       font-weight: bold;
-      font-size: clamping($top-title-fs, 6);
+      font-size: clamping($top-title-fs, $max-title-fs-multiplier);
       @include fade-in-bottom();
     }
     #top-sub-title {
@@ -112,7 +112,7 @@ export default {
       padding-left: clamping($top-title-left-p);
       color: black;
       font-weight: bold;
-      font-size: clamping($top-sub-title-fs, 6);
+      font-size: clamping($top-sub-title-fs, $max-title-fs-multiplier);
       @include fade-in-bottom(0.6s);
     }
   }
@@ -122,6 +122,7 @@ export default {
     justify-content: center;
     width: clamping($chart-w);
     margin: clamping($pref-chart-m) auto;
+    @include fade-in-bottom(1.8s);
   }
 }
 </style>

@@ -129,7 +129,7 @@ export default {
     }
   }
   #pref-btn-group-wrap {
-    height: clamping($pref-btn-group-wrap-h, 5);
+    height: clamping($pref-btn-group-wrap-h, $max-pref-btn-multiplier);
     overflow: hidden;
   }
 }
