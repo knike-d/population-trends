@@ -1,6 +1,9 @@
 $max-w-multiplier: 7.5;
+$max-pref-btn-multiplier: 5;
 $main-color: #1ae36a;
-$hover-color: #efefef;
+$hover-color: #f5f5f5;
+$btn-border-color: #b1b1b1;
+$checked-color: linear-gradient(180deg, #d8ffd9 0%, #abffa5 100%);
 $lg-fs: 8vw;
 $md-fs: 3.6vw;
 $sm-fs: 3.4vw;
@@ -23,10 +26,11 @@ $pref-slct-wrap-w: 86vw;
 $pref-slct-wrap-top-m: 3vw;
 $pref-slct-nav-h: 10vw;
 $pref-slct-fs: $sm-fs;
+$pref-slct-wrap-w: 86vw;
+$pref-btn-group-wrap-h: 75vw;
 
 /* PrefBtnGroup.vue */
 $pref-wrap-top-m: 2vw;
-$max-btn-multiplier: 5;
 $pref-btn-fs: $sm-fs;
 $pref-btn-h: 12vw;
 $pref-btn-bottom-m: 3vw;
