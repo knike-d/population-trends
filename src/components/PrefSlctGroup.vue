@@ -1,17 +1,25 @@
 <template>
   <div id="pref-slct-wrap">
     <div id="pref-slct-nav">
-      <button id="pref-slct-back" v-show="prefSlctState" @click="goRegionList">
+      <button id="pref-slct-back" v-show="prefSlctState" @click="backRegionList">
         戻る
       </button>
       <div id="pref-slct-txt">
         都道府県を選択してください<br />
         現在の選択数：{{ slctPrefList.prefCodeList.length }}
       </div>
+      <button id="pref-slct-reset" @click="resetSlctPref">
+        全選択解除
+      </button>
     </div>
     <div id="pref-btn-group-wrap">
       <transition name="region">
-        <PrefBtnGroup v-if="!prefSlctState" :name-list="regionList" @click-region="goPrefList" />
+        <PrefBtnGroup
+          v-show="!prefSlctState"
+          :name-list="regionList"
+          @click-region="goPrefList"
+          ref="region_btn"
+        />
       </transition>
       <transition name="pref">
         <PrefBtnGroup
@@ -19,6 +27,7 @@
           :name-list="prefNameList"
           :pref-code-list="prefCodeList"
           @click-pref="emitPref"
+          ref="pref_btn"
         />
       </transition>
     </div>
@@ -43,6 +52,7 @@ export default {
       prefSlctState: false,
       regionList: regionList,
       slctRegion: "",
+      checkedRegionList: [],
       allPrefList: [],
     };
   },
@@ -77,12 +87,22 @@ export default {
       });
   },
   methods: {
-    goRegionList() {
+    backRegionList() {
       this.prefSlctState = false;
+      this.updateCheckedRegion();
     },
     goPrefList(regionName) {
       this.slctRegion = regionName;
       this.prefSlctState = true;
+    },
+    resetSlctPref() {
+      this.slctPrefList = {
+        prefNameList: [],
+        prefCodeList: [],
+      };
+      this.$refs.pref_btn.resetChecked();
+      this.updateCheckedRegion();
+      this.$emit("emit-pref-list", this.slctPrefList);
     },
     emitPref(prefName, prefCode) {
       const index = this.slctPrefList.prefCodeList.indexOf(prefCode);
@@ -94,6 +114,18 @@ export default {
         this.slctPrefList.prefCodeList.splice(index, 1);
       }
       this.$emit("emit-pref-list", this.slctPrefList);
+    },
+    updateCheckedRegion() {
+      const found = this.prefNameList.filter(
+        (name) => this.slctPrefList.prefNameList.indexOf(name) >= 0
+      );
+      const index = this.checkedRegionList.indexOf(this.slctRegion);
+      if (found.length > 0) {
+        if (index === -1) this.checkedRegionList.push(this.slctRegion);
+      } else {
+        if (index !== -1) this.checkedRegionList.splice(index, 1);
+      }
+      this.$refs.region_btn.checkedBtnList = this.checkedRegionList;
     },
   },
 };
@@ -126,6 +158,17 @@ export default {
       font-weight: bold;
       font-size: clamping($pref-slct-fs, $max-pref-btn-multiplier);
       text-align: center;
+    }
+    #pref-slct-reset {
+      position: absolute;
+      right: 0;
+      padding: 4px 5px;
+      font-weight: bold;
+      font-size: clamping($pref-slct-fs, $max-pref-btn-multiplier);
+      background: white;
+      border: solid $btn-border-color 1px;
+      @include click-effect();
+      @include hover_active($hover-color);
     }
   }
   #pref-btn-group-wrap {

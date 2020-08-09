@@ -5,7 +5,7 @@
         type="checkbox"
         :id="'btn_' + name"
         class="pref-btn-input"
-        v-model="checkedBtn"
+        v-model="checkedBtnList"
         @click="clickBtn(name, index)"
         :value="name"
         :key="'input_' + name"
@@ -31,7 +31,7 @@ export default {
   },
   data() {
     return {
-      checkedBtn: [],
+      checkedBtnList: [],
     };
   },
   methods: {
@@ -39,6 +39,9 @@ export default {
       this.prefCodeList === null
         ? this.$emit("click-region", name)
         : this.$emit("click-pref", name, this.prefCodeList[index]);
+    },
+    resetChecked() {
+      this.checkedBtnList = [];
     },
   },
 };
