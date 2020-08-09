@@ -55,33 +55,38 @@ export default {
   },
   methods: {
     async receivePref(list) {
-      const prefUrl = "https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear";
-      const labels = [];
       const datasets = [];
       for (const i in list.prefCodeList) {
         const prefData = {};
-        await axios
-          .get(prefUrl, {
-            headers: { "X-API-KEY": process.env.VUE_APP_API_KEY },
+        let foundSessionData = JSON.parse(
+          sessionStorage.getItem("prefCode_" + list.prefCodeList[i])
+        );
+        const api = axios.create({
+          baseURL: "https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear",
+          headers: { "X-API-KEY": process.env.VUE_APP_API_KEY },
+        });
+        if (!foundSessionData) {
+          await api({
+            method: "get",
             params: {
               prefCode: list.prefCodeList[i],
-              cityCode: "-",
             },
-          })
-          .then((res) => {
+          }).then((res) => {
             const resData = res.data.result.data[0].data;
-            Object.assign(
-              labels,
-              resData.map((obj) => obj.year)
+            sessionStorage.setItem("prefCode_" + list.prefCodeList[i], JSON.stringify(resData));
+            sessionStorage.setItem("labels", JSON.stringify(resData.map((obj) => obj.year)));
+            foundSessionData = JSON.parse(
+              sessionStorage.getItem("prefCode_" + list.prefCodeList[i])
             );
-            prefData.label = list.prefNameList[i];
-            prefData.data = resData.map((obj) => obj.value);
-            prefData.borderColor = `hsl(${(360 / list.prefCodeList.length) * i}, 100%, 65%)`;
-            prefData.fill = false;
-            datasets.push(prefData);
           });
+        }
+        prefData.data = foundSessionData.map((obj) => obj.value);
+        prefData.label = list.prefNameList[i];
+        prefData.borderColor = `hsl(${(360 / list.prefCodeList.length) * i}, 100%, 65%)`;
+        prefData.fill = false;
+        datasets.push(prefData);
       }
-      this.chartData.labels = labels;
+      this.chartData.labels = JSON.parse(sessionStorage.getItem("labels"));
       this.chartData.datasets = datasets;
     },
   },
