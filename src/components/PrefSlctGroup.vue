@@ -1,24 +1,32 @@
 <template>
   <div id="pref-slct-wrap">
     <div id="pref-slct-nav">
-      <button id="pref-slct-back" v-show="prefSlctState" @click="goRegionList">
+      <button id="pref-slct-back" v-show="prefSlctState" @click="changeBtnGroup">
         戻る
       </button>
       <div id="pref-slct-txt">
         都道府県を選択してください<br />
         現在の選択数：{{ slctPrefList.prefCodeList.length }}
       </div>
+      <button id="pref-slct-reset" @click="resetSlctPref">
+        全選択解除
+      </button>
     </div>
     <div id="pref-btn-group-wrap">
       <transition name="region">
-        <PrefBtnGroup v-if="!prefSlctState" :name-list="regionList" @click-region="goPrefList" />
+        <PrefBtnGroup
+          v-show="!prefSlctState"
+          :region-list="regionList"
+          @click-region="changeBtnGroup"
+          ref="region_btn"
+        />
       </transition>
       <transition name="pref">
         <PrefBtnGroup
           v-show="prefSlctState"
-          :name-list="prefNameList"
-          :pref-code-list="prefCodeList"
+          :pref-list="sortedPrefList"
           @click-pref="emitPref"
+          ref="pref_btn"
         />
       </transition>
     </div>
@@ -43,25 +51,19 @@ export default {
       prefSlctState: false,
       regionList: regionList,
       slctRegion: "",
+      checkedRegionList: [],
       allPrefList: [],
     };
   },
   computed: {
-    prefNameList() {
+    sortedPrefList() {
+      const prefList = {};
       if (Object.keys(this.allPrefList).length && this.slctRegion) {
         const foundList = this.allPrefList.find((obj) => obj.region === this.slctRegion);
-        return foundList.prefList.map((obj) => obj.prefName);
-      } else {
-        return [];
+        prefList.prefNameList = foundList.prefList.map((obj) => obj.prefName);
+        prefList.prefCodeList = foundList.prefList.map((obj) => obj.prefCode);
       }
-    },
-    prefCodeList() {
-      if (Object.keys(this.allPrefList).length && this.slctRegion) {
-        const foundList = this.allPrefList.find((obj) => obj.region === this.slctRegion);
-        return foundList.prefList.map((obj) => obj.prefCode);
-      } else {
-        return [];
-      }
+      return prefList;
     },
   },
   created() {
@@ -77,12 +79,19 @@ export default {
       });
   },
   methods: {
-    goRegionList() {
-      this.prefSlctState = false;
+    changeBtnGroup(regionName) {
+      this.prefSlctState ? this.updateCheckedRegion() : (this.slctRegion = regionName);
+      this.prefSlctState = !this.prefSlctState;
     },
-    goPrefList(regionName) {
-      this.slctRegion = regionName;
-      this.prefSlctState = true;
+    resetSlctPref() {
+      this.slctPrefList = {
+        prefNameList: [],
+        prefCodeList: [],
+      };
+      this.$refs.pref_btn.resetChecked();
+      this.checkedRegionList = [];
+      this.updateCheckedRegion();
+      this.$emit("emit-pref-list", this.slctPrefList);
     },
     emitPref(prefName, prefCode) {
       const index = this.slctPrefList.prefCodeList.indexOf(prefCode);
@@ -94,6 +103,18 @@ export default {
         this.slctPrefList.prefCodeList.splice(index, 1);
       }
       this.$emit("emit-pref-list", this.slctPrefList);
+    },
+    updateCheckedRegion() {
+      const found = this.sortedPrefList.prefNameList.filter(
+        (name) => this.slctPrefList.prefNameList.indexOf(name) >= 0
+      );
+      const index = this.checkedRegionList.indexOf(this.slctRegion);
+      if (found.length) {
+        if (index === -1) this.checkedRegionList.push(this.slctRegion);
+      } else {
+        if (index !== -1) this.checkedRegionList.splice(index, 1);
+      }
+      this.$refs.region_btn.checkedBtnList = this.checkedRegionList;
     },
   },
 };
@@ -126,6 +147,17 @@ export default {
       font-weight: bold;
       font-size: clamping($pref-slct-fs, $max-pref-btn-multiplier);
       text-align: center;
+    }
+    #pref-slct-reset {
+      position: absolute;
+      right: 0;
+      padding: 4px 5px;
+      font-weight: bold;
+      font-size: clamping($pref-slct-fs, $max-pref-btn-multiplier);
+      background: white;
+      border: solid $btn-border-color 1px;
+      @include click-effect();
+      @include hover_active($hover-color);
     }
   }
   #pref-btn-group-wrap {

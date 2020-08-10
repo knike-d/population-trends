@@ -5,7 +5,7 @@
         type="checkbox"
         :id="'btn_' + name"
         class="pref-btn-input"
-        v-model="checkedBtn"
+        v-model="checkedBtnList"
         @click="clickBtn(name, index)"
         :value="name"
         :key="'input_' + name"
@@ -20,25 +20,30 @@
 <script>
 export default {
   props: {
-    nameList: {
-      type: Array,
-      required: true,
-    },
-    prefCodeList: {
+    regionList: {
       type: Array,
       default: () => null,
     },
+    prefList: Object,
   },
   data() {
     return {
-      checkedBtn: [],
+      checkedBtnList: [],
     };
+  },
+  computed: {
+    nameList() {
+      return this.regionList ? this.regionList : this.prefList.prefNameList;
+    },
   },
   methods: {
     clickBtn(name, index) {
-      this.prefCodeList === null
+      this.regionList
         ? this.$emit("click-region", name)
-        : this.$emit("click-pref", name, this.prefCodeList[index]);
+        : this.$emit("click-pref", name, this.prefList.prefCodeList[index]);
+    },
+    resetChecked() {
+      this.checkedBtnList = [];
     },
   },
 };
