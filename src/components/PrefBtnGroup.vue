@@ -20,25 +20,27 @@
 <script>
 export default {
   props: {
-    nameList: {
-      type: Array,
-      required: true,
-    },
-    prefCodeList: {
+    regionList: {
       type: Array,
       default: () => null,
     },
+    prefList: Object,
   },
   data() {
     return {
       checkedBtnList: [],
     };
   },
+  computed: {
+    nameList() {
+      return this.regionList ? this.regionList : this.prefList.prefNameList;
+    },
+  },
   methods: {
     clickBtn(name, index) {
-      this.prefCodeList === null
+      this.regionList
         ? this.$emit("click-region", name)
-        : this.$emit("click-pref", name, this.prefCodeList[index]);
+        : this.$emit("click-pref", name, this.prefList.prefCodeList[index]);
     },
     resetChecked() {
       this.checkedBtnList = [];

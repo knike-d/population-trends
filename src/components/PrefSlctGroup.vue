@@ -1,7 +1,7 @@
 <template>
   <div id="pref-slct-wrap">
     <div id="pref-slct-nav">
-      <button id="pref-slct-back" v-show="prefSlctState" @click="backRegionList">
+      <button id="pref-slct-back" v-show="prefSlctState" @click="changeBtnGroup">
         戻る
       </button>
       <div id="pref-slct-txt">
@@ -16,16 +16,15 @@
       <transition name="region">
         <PrefBtnGroup
           v-show="!prefSlctState"
-          :name-list="regionList"
-          @click-region="goPrefList"
+          :region-list="regionList"
+          @click-region="changeBtnGroup"
           ref="region_btn"
         />
       </transition>
       <transition name="pref">
         <PrefBtnGroup
           v-show="prefSlctState"
-          :name-list="prefNameList"
-          :pref-code-list="prefCodeList"
+          :pref-list="sortedPrefList"
           @click-pref="emitPref"
           ref="pref_btn"
         />
@@ -57,21 +56,14 @@ export default {
     };
   },
   computed: {
-    prefNameList() {
+    sortedPrefList() {
+      const prefList = {};
       if (Object.keys(this.allPrefList).length && this.slctRegion) {
         const foundList = this.allPrefList.find((obj) => obj.region === this.slctRegion);
-        return foundList.prefList.map((obj) => obj.prefName);
-      } else {
-        return [];
+        prefList.prefNameList = foundList.prefList.map((obj) => obj.prefName);
+        prefList.prefCodeList = foundList.prefList.map((obj) => obj.prefCode);
       }
-    },
-    prefCodeList() {
-      if (Object.keys(this.allPrefList).length && this.slctRegion) {
-        const foundList = this.allPrefList.find((obj) => obj.region === this.slctRegion);
-        return foundList.prefList.map((obj) => obj.prefCode);
-      } else {
-        return [];
-      }
+      return prefList;
     },
   },
   created() {
@@ -87,13 +79,9 @@ export default {
       });
   },
   methods: {
-    backRegionList() {
-      this.prefSlctState = false;
-      this.updateCheckedRegion();
-    },
-    goPrefList(regionName) {
-      this.slctRegion = regionName;
-      this.prefSlctState = true;
+    changeBtnGroup(regionName) {
+      this.prefSlctState ? this.updateCheckedRegion() : (this.slctRegion = regionName);
+      this.prefSlctState = !this.prefSlctState;
     },
     resetSlctPref() {
       this.slctPrefList = {
@@ -101,6 +89,7 @@ export default {
         prefCodeList: [],
       };
       this.$refs.pref_btn.resetChecked();
+      this.checkedRegionList = [];
       this.updateCheckedRegion();
       this.$emit("emit-pref-list", this.slctPrefList);
     },
@@ -116,11 +105,11 @@ export default {
       this.$emit("emit-pref-list", this.slctPrefList);
     },
     updateCheckedRegion() {
-      const found = this.prefNameList.filter(
+      const found = this.sortedPrefList.prefNameList.filter(
         (name) => this.slctPrefList.prefNameList.indexOf(name) >= 0
       );
       const index = this.checkedRegionList.indexOf(this.slctRegion);
-      if (found.length > 0) {
+      if (found.length) {
         if (index === -1) this.checkedRegionList.push(this.slctRegion);
       } else {
         if (index !== -1) this.checkedRegionList.splice(index, 1);
