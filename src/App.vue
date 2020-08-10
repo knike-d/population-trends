@@ -62,7 +62,7 @@ export default {
           sessionStorage.getItem("prefCode_" + list.prefCodeList[i])
         );
         const api = axios.create({
-          baseURL: "https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear",
+          baseURL: "https://opendata.resas-portal.go.jp/api/v1/populatiaon/composition/perYear",
           headers: { "X-API-KEY": process.env.VUE_APP_API_KEY },
         });
         if (!foundSessionData) {
@@ -71,14 +71,18 @@ export default {
             params: {
               prefCode: list.prefCodeList[i],
             },
-          }).then((res) => {
-            const resData = res.data.result.data[0].data;
-            sessionStorage.setItem("prefCode_" + list.prefCodeList[i], JSON.stringify(resData));
-            sessionStorage.setItem("labels", JSON.stringify(resData.map((obj) => obj.year)));
-            foundSessionData = JSON.parse(
-              sessionStorage.getItem("prefCode_" + list.prefCodeList[i])
-            );
-          });
+          })
+            .then((res) => {
+              const resData = res.data.result.data[0].data;
+              sessionStorage.setItem("prefCode_" + list.prefCodeList[i], JSON.stringify(resData));
+              sessionStorage.setItem("labels", JSON.stringify(resData.map((obj) => obj.year)));
+              foundSessionData = JSON.parse(
+                sessionStorage.getItem("prefCode_" + list.prefCodeList[i])
+              );
+            })
+            .catch(() => {
+              alert("人口推移情報の取得に失敗しました");
+            });
         }
         prefData.data = foundSessionData.map((obj) => obj.value);
         prefData.label = list.prefNameList[i];

@@ -72,10 +72,13 @@ export default {
       .get(prefUrl, {
         headers: { "X-API-KEY": process.env.VUE_APP_API_KEY },
       })
-      .then((response) => {
+      .then((res) => {
         for (const i in prefNumArray)
-          prefArray[i].prefList = response.data.result.splice(0, prefNumArray[i]);
+          prefArray[i].prefList = res.data.result.splice(0, prefNumArray[i]);
         this.allPrefList = prefArray;
+      })
+      .catch(() => {
+        alert("都道府県情報の取得に失敗しました");
       });
   },
   methods: {
